@@ -1,0 +1,36 @@
+version: '3.8'
+
+volumes:
+  db_data:
+    driver: local
+
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_USER: "vova"
+      MYSQL_DATABASE: "repair_db"
+      MYSQL_PASSWORD: "vova"
+      MYSQL_ROOT_PASSWORD: "vova"
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+
+  app:
+    build: .
+    image: repair_app
+    working_dir: /app
+    volumes:
+      - ./app:/app
+    depends_on:
+      - db
+    ports:
+      - 8000:8000
+    command: sleep 10000000
+#    command: "./manage.py runserver 0.0.0.0:8000"
