@@ -38,5 +38,85 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
+    position = models.ForeignKey(
+        'Position',
+        related_name='position',
+        on_delete=models.CASCADE,
+        null=True
+    )
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+class Position(models.Model):
+    name = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class Repair_order(models.Model):
+
+    user = models.ForeignKey(
+        User,
+        related_name='users',
+        on_delete=models.CASCADE,
+        null=True
+    )
+    Status_CHOICES = (
+        ('Принят', 'Принят'),
+        ('В работе', 'В работе'),
+        ('Готов', 'Готов')
+    )
+    status = models.CharField(max_length=70, choices=Status_CHOICES, default="")
+    description_device = models.CharField(max_length=300, blank=True)
+    date_start = models.DateField(blank=True)
+    date_end = models.DateField(blank=True)
+    worker = models.ForeignKey(
+        User,
+        related_name='worker',
+        on_delete=models.CASCADE,
+        null=True
+    )
+
+class Spare_parts(models.Model):
+    name = models.CharField(max_length=200, blank=True)
+    count = models.IntegerField(blank=True)
+    price_for_1 = models.FloatField(blank=True)
+    description = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class Purchase_order(models.Model):
+    description_device_or_detail = models.CharField(max_length=300, blank=True)
+    amount = models.IntegerField(blank=True)
+    date_create = models.DateField(blank=True)
+    date_supplies = models.DateField(blank=True)
+    provider = models.CharField(max_length=100, blank=True)
+    price = models.FloatField(blank=True)
+
+    def __str__(self):
+        return self.description_device_or_detail
+
+class Story_spare_parts(models.Model):
+    spare_parts = models.ForeignKey(
+        Spare_parts,
+        related_name='spare_parts',
+        on_delete=models.CASCADE,
+        null=True
+    )
+    user = models.ForeignKey(
+        User,
+        related_name='users_Story_spare_parts_user',
+        on_delete=models.CASCADE,
+        null=True
+    )
+    purchase_order = models.ForeignKey(
+        Purchase_order,
+        related_name='purchase_order',
+        on_delete=models.CASCADE,
+        null=True
+    )
+    count = models.IntegerField(blank=True)
+    description = models.CharField(max_length=200, blank=True)
+    timestamp = models.DateField(blank=True)
