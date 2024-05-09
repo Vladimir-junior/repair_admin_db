@@ -1,0 +1,44 @@
+{% extends "admin/index.html" %}
+
+
+{% block content %}
+    {{ block.super }}
+    <style>
+        .expenses_div {
+            border: 1.5px solid #417893;
+            padding:5px;
+            background: var(--body-bg);
+            color: #417893;
+        }
+
+        .income_div {
+            border: 1.5px solid #417893;
+            padding:5px;
+            color: #417893;
+        }
+
+        .tt_center{
+         color:white;
+        }
+
+        p {
+            font-family: "Gill Sans", sans-serif;
+        }
+
+
+    </style>
+    <p class="tt_center">.</p>
+    <div class="expenses_div">
+        <p>Расходы:</p>
+        {% for item in outcome %}
+            <p>{{item.period|date:"M Y"}}: {{item.total_price}}</p>
+        {% endfor %}
+    </div>
+    <p class="tt_center">.</p>
+    <div class="income_div">
+        <p>Доходы:</p>
+        {% for item in income %}
+            <p>{{item.period|date:"M Y"}}: {{item.total_price}}</p>
+        {% endfor %}
+    </div>
+{% endblock %}

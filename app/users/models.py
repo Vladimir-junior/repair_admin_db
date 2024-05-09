@@ -1,4 +1,4 @@
-from django.db import models
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
@@ -54,7 +54,10 @@ class Position(models.Model):
     def __str__(self):
         return self.name
 
-class Repair_order(models.Model):
+class RepairOrder(models.Model):
+    class Meta:
+        verbose_name = 'Repair Order'
+        verbose_name_plural = 'Repair Orders'
 
     user = models.ForeignKey(
         User,
@@ -62,15 +65,16 @@ class Repair_order(models.Model):
         on_delete=models.CASCADE,
         null=True
     )
-    Status_CHOICES = (
-        ('Принят', 'Принят'),
-        ('В работе', 'В работе'),
-        ('Готов', 'Готов')
-    )
+    Status_CHOICES = {
+        "READY": "Готов",
+        "IN_PROGRESS": "В работе",
+        "ACCEPTED": "Принят",
+    }
     status = models.CharField(max_length=70, choices=Status_CHOICES, default="")
     description_device = models.CharField(max_length=300, blank=True)
+    price = models.IntegerField(blank=True, null=True)
     date_start = models.DateField(blank=True)
-    date_end = models.DateField(blank=True)
+    date_end = models.DateField(blank=True, null=True)
     worker = models.ForeignKey(
         User,
         related_name='worker',
@@ -78,7 +82,10 @@ class Repair_order(models.Model):
         null=True
     )
 
-class Spare_parts(models.Model):
+class SpareParts(models.Model):
+    class Meta:
+        verbose_name = 'Spare Part'
+        verbose_name_plural = 'Spare Parts'
     name = models.CharField(max_length=200, blank=True)
     count = models.IntegerField(blank=True)
     price_for_1 = models.FloatField(blank=True)
@@ -87,7 +94,10 @@ class Spare_parts(models.Model):
     def __str__(self):
         return self.name
 
-class Purchase_order(models.Model):
+class PurchaseOrder(models.Model):
+    class Meta:
+        verbose_name = 'Purchase Order'
+        verbose_name_plural = 'Purchase Orders'
     description_device_or_detail = models.CharField(max_length=300, blank=True)
     amount = models.IntegerField(blank=True)
     date_create = models.DateField(blank=True)
@@ -98,9 +108,12 @@ class Purchase_order(models.Model):
     def __str__(self):
         return self.description_device_or_detail
 
-class Story_spare_parts(models.Model):
+class StorySpareParts(models.Model):
+    class Meta:
+        verbose_name = 'Story Spare Part'
+        verbose_name_plural = 'Story Spare Parts'
     spare_parts = models.ForeignKey(
-        Spare_parts,
+        SpareParts,
         related_name='spare_parts',
         on_delete=models.CASCADE,
         null=True
@@ -111,12 +124,12 @@ class Story_spare_parts(models.Model):
         on_delete=models.CASCADE,
         null=True
     )
-    purchase_order = models.ForeignKey(
-        Purchase_order,
-        related_name='purchase_order',
-        on_delete=models.CASCADE,
-        null=True
-    )
+    EMERGENCE_CHOICES = {
+        "SUPPLY": "Поставка",
+        "REPAIR": "Ремонт",
+        "MARRIAGE": "Брак",
+    }
+    emergence = models.CharField(max_length=70, choices=EMERGENCE_CHOICES, default="")
     count = models.IntegerField(blank=True)
     description = models.CharField(max_length=200, blank=True)
     timestamp = models.DateField(blank=True)
