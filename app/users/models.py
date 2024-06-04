@@ -81,6 +81,7 @@ class RepairOrder(models.Model):
         on_delete=models.CASCADE,
         null=True
     )
+    repair_code = models.IntegerField(blank=True, null=True, unique=True)
 
 class SpareParts(models.Model):
     class Meta:

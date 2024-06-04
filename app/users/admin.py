@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth.models import Group
 from django.contrib.admin.sites import AdminSite
 from django.db.models.functions import Trunc
 from django.db.models import Avg, Count, Min, Sum, F, DateField
@@ -65,7 +64,7 @@ class PositionAdmin(admin.ModelAdmin):
 
 
 class RepairOrderAdmin(admin.ModelAdmin):
-    list_display = ["user_full_name", "status", "description_device", "date_start", "date_end", "worker", "price"]
+    list_display = ["user_full_name", "status", "description_device", "date_start", "date_end", "worker", "price", "repair_code"]
     search_fields = ["user__first_name", "user__last_name", "description_device"]
 
     @admin.display(empty_value="-")
